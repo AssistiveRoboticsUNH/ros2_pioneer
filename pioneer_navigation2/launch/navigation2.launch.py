@@ -30,12 +30,6 @@ def generate_launch_description():
     use_rviz = LaunchConfiguration('use_rviz', default='true')
     slam = LaunchConfiguration('use_slam', default='False')
 
-    # slam = LaunchConfiguration('slam')
-    # declare_slam_cmd = DeclareLaunchArgument(
-    #     'slam',
-    #     default_value='False',
-    #     description='Whether run a SLAM')
-
     use_sim_time = LaunchConfiguration('use_sim_time', default='false')
     map_dir = LaunchConfiguration(
         'map',
@@ -78,12 +72,6 @@ def generate_launch_description():
         default_value='false',
         description='Use simulation (Gazebo) clock if true'))
 
-    # ld.add_action(DeclareLaunchArgument(
-    #     'slam',
-    #     default_value='True',
-    #     description='Whether run a SLAM')
-    # )
-
     ld.add_action(IncludeLaunchDescription(
         PythonLaunchDescriptionSource([nav2_launch_file_dir, '/bringup_launch.py']),
         launch_arguments={
@@ -92,12 +80,7 @@ def generate_launch_description():
             'params_file': param_dir,
             'slam': slam}.items(),
     ))
-    # IncludeLaunchDescription(
-    #     PythonLaunchDescriptionSource([slam_launch_file_dir, '/online_async_launch.py']),
-    #     launch_arguments={
-    #         'use_sim_time': use_sim_time,
-    #         'slam_params_file': param_dir}.items(),
-    # ),
+
     ld.add_action(Node(
         package='rviz2',
         executable='rviz2',
@@ -106,13 +89,5 @@ def generate_launch_description():
         parameters=[{'use_sim_time': use_sim_time}],
         condition=IfCondition(use_rviz),
         output='screen'))
-
-    # ld2 = LaunchDescription()
-    # ld.add_action(Node(
-    #     package='nav2_waypoint_follower',
-    #     executable='waypoint_follower',
-    #     name='waypoint_follower',
-    #     parameters=[param_dir],
-    #     output='screen'))
 
     return ld
